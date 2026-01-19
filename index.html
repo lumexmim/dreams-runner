@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드림즈런너</title>
+    <style>
+        /* 폰트 설정 */
+        @font-face {
+            font-family: 'NexonMaplestory';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFLight.woff') format('woff');
+            font-weight: 300;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'NexonMaplestory';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFBold.woff') format('woff');
+            font-weight: 700;
+            font-display: swap;
+        }
+
+        /* 기본 설정 - 모든 요소에 폰트 강제 적용 */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'NexonMaplestory', sans-serif !important; 
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 배경 설정 */
+        .bg-container {
+            width: 100%;
+            min-height: 100vh;
+            background-image: url('https://media.discordapp.net/attachments/783522603980947477/1460874961383329812/KakaoTalk_20260114_021535562_02.png?ex=69688154&is=69672fd4&hm=adb6e1de4ffe9aa1284e4db8bc76e879036beec06ade8f251eb37ec552fef062&=&format=webp&quality=lossless&width=702&height=525');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        /* 메인 화면 */
+        #main-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #main-page.fade-out { opacity: 0; pointer-events: none; }
+
+        .floating-logo {
+            width: 60%;
+            max-width: 600px;
+            filter: drop-shadow(0px 10px 25px rgba(0,0,0,0.3));
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 30px;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .nav-group { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .nav-btn {
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.4); transform: translateY(-3px); }
+
+        /* 공통 페이지 스타일 */
+        .content-page {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            line-height: 1.8;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .content-page.pop-in { opacity: 1; transform: scale(1); }
+
+        /* 섹션 제목 스타일 */
+        .section-title {
+            font-size: 1.8rem;
+            color: #012cee;
+            margin: 40px 0 20px;
+            border-bottom: 2px solid #012cee;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .section-title:first-child { margin-top: 0; }
+
+        .content-text { margin-bottom: 20px; font-size: 1rem; color: #444; word-break: keep-all; }
+        
+        /* 시스템 박스 스타일 */
+        .system-box {
+            background: rgba(1, 44, 238, 0.05);
+            border: 1px solid rgba(1, 44, 238, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trigger-warning {
+            background: #fff0f0; border-left: 5px solid #ff4d4d;
+            padding: 20px; margin-bottom: 30px; font-weight: bold; border-radius: 5px;
+        }
+        .tw-title { color: #ff4d4d; font-size: 1.2rem; display: block; margin-bottom: 10px; }
+
+        .back-btn {
+            margin-top: 30px; padding: 12px 25px; background: #012cee;
+            color: white; border: none; border-radius: 30px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .back-btn:hover { background: #001f9c; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-container">
+        
+        <div id="main-page">
+            <img src="https://media.discordapp.net/attachments/783522603980947477/1460874957486555402/KakaoTalk_20260114_030048640.png?ex=69688153&is=69672fd3&hm=5cf2142f54d6ac4c40c423a135cfa878f3a96862fc1055a7c047f34c49783503&=&format=webp&quality=lossless&width=1929&height=642" alt="로고" class="floating-logo">
+            <div class="nav-group">
+                <button class="nav-btn" onclick="showPage('notice-page')">공지사항</button>
+                <button class="nav-btn" onclick="showPage('world-page')">세계관</button>
+                <button class="nav-btn" onclick="showPage('system-page')">시스템</button>
+                <a href="https://docs.google.com/document/d/1mD24Y_U7-3d_xVWD8n0bhYVU30-REs9NxSe9agzZU2k/edit?usp=sharing" target="_blank" class="nav-btn" style="text-align:center;">신청서 양식</a>
+            </div>
+        </div>
+
+        <div id="notice-page" class="content-page">
+            <div class="trigger-warning">
+                <span class="tw-title">TRIGGER WARNING </span>
+                본 커뮤니티에는 부상, 세뇌 등 트리거 요소를 포함하고 있으며, <br> 
+                러너분의 자/눈/호/관/덕캐가 이러한 상태에 빠질 수 있음을 알립니다.
+            </div>
+            
+            <h2 class="section-title">통합 공지사항</h2>
+            <p class="content-text"><드림즈런너>는 밴드를 메인 플랫폼으로 하는 커뮤니티입니다. 이름은 <strong>드림즈런너</strong>이며, 약칭 &lt;드런너&gt;로 통일합니다.</p>
+            <p class="content-text">라온 <strong>&lt;테일즈런너&gt;</strong>를 기반으로 하며, 원작과 다른 스토리로 진행됩니다. 인게임 연동 시스템상 최소 <strong>빨간 쏠라윙부츠</strong> 레벨 제한을 두고 있습니다. 레벨 제한은 추후 변경될 수 있습니다.</p>
+            <p class="content-text"><strong>2010년생 이상</strong>만 신청 가능합니다. 빠른년생은 받지 않으며 미만 나이의 면접 또한 받지 않습니다. 
+            <p class="content-text">수위표는 <strong>Safenet 기준 2121</strong>입니다. 음주/흡연/마약은 절대 불가합니다.</p>
+            <p class="content-text"><드림즈런너>는  일상 후 약시리 장르로, 일상 4D 시리 4D로 진행됩니다. 일상기간 내에는 짤 트레, 밈성 발언 등 개그성 로그 업로드가 가능하나, 시리기간 내에는 어두운 분위기를 지향합니다.</p>
+            <p class="content-text">삼진아웃제를 채용하며, 개인경고를 3번 받으실 시 제명 조치, 전체 경고를 3번 받을 시 조기엔딩으로 이어집니다. 또한 48시간 동안 총괄진에게 언질 없이 활동이 확인되지 않을 시 제명 조치합니다. 제명 조치 된 캐릭터는 모두 세계관 내에서 없던 것으로 처리됩니다. </p>
+            <p class="content-text"><드림즈런너>는  글 그림 복합 커뮤니티입니다. 그러나 무조건적인 그림 인장만을 허용하며, 커뮤 사용이 가능한 픽크루나 캐릭터 메이커 어플 인장 또한 허용합니다. AI 사용과 프리 아이콘은 금지하며, 픽크루나 네카, 커미션 작업물을 사용하였을 시 출처 표기 부탁드립니다. 또한 선글찍은 존재하지 않습니다. 이을 수 있게, 알아볼 수 있게끔 부탁드립니다. </p>
+            <p class="content-text"><드림즈런너>는  신청서 합격제로, 최소 20명, 최대 28명의 인원을 수용할 예정입니다. </p>
+
+            <h2 class="section-title">커뮤니티 러닝</h2>
+            <p class="content-text">리얼 타임제, 가상 웨더제를 채용하며 계절은 <strong>봄</strong>입니다. 하늘은 푸르고, 적당히 따뜻한 날씨입니다. </p>
+            <p class="content-text">캐릭터 간의 1:1이 불가능하나, 시리 돌입 이후 비밀 댓글은 허용합니다. </p>
+            <p class="content-text">러닝 타래의 경우 비공개 계정에서의 개설만을 허용합니다. 지인플이 적발될 시 경고가 부여될 수 있습니다. </p>
+            <p class="content-text">1오너의 다수 캐릭터, 다수 오너의 1캐릭터의 러닝을 금합니다. </p>
+            <p class="content-text">고/관록의 경우 엔딩 이후 업로드 가능합니다. 낚고 허용이긴 하나 관련으로 지인플이 적발될 시 경고가 부여될 수 있습니다. </p>
+            <p class="content-text">초성과 이모티콘은 괄호 안에서만 허용합니다. <br> (O) 정말 대단하네요! (☺) <br> (O) 베라 완전 화났어! (ㅡㅡ)</p>
+            <p class="content-text">간단 신청서 및 <strong>가벼운 러닝</strong>을 지향합니다. </p>
+
+            <h2 class="section-title">캐릭터</h2>
+            <p class="content-text">동화나라를 배경으로 하며, 16세~100세의 지구에서 사는 인간 캐릭터로 고정합니다. 국적은 자유롭게 가능하며, 테일즈런너 내 세계관에서 살고 있는 설정은 불가합니다. </p>
+            <p class="content-text">오직 소원이 있는 캐릭터만 가능합니다. </p>
+            <p class="content-text">역안과 보기 거북할 정도의 쨍한 색을 불허하며, 오드아이와 파이아이, 특이동공을 허용하며 머리톤은 최대 쓰리톤까지 가능합니다. 관련하여 렌즈나 염색 설정을 부여하지 않아도 괜찮습니다.</p>
+            <p class="content-text">남성과 여성의 캐릭터만 허용합니다.</p>
+
+            <button class="back-btn" onclick="showMain()">뒤로 가기</button>
+        </div>
+
+        <div id="world-page" class="content-page">
+            <h2 class="section-title">시놉시스</h2>
+            <p class="content-text">서기 <strong>2010년</strong>. SNS보다는 미니홈피의 도토리가 소중했던 시절. 각자의 사연을 품고 살아가던 이들에게 한 소식이 도착합니다.</p>
+            <div class="system-box">
+                <p class="content-text" style="margin-bottom:5px;"><strong>드림즈런너 달리기 대회</strong></p>
+                <p class="content-text" style="margin-bottom:5px;"><strong>우승상품</strong>: 소원의돌</p>
+                <p class="content-text" style="margin-bottom:5px;"> 무슨 소원이든 한가지 들어줌 </p>
+            </div>
+
+            <p class="content-text">달리기 대회 우승자에게, <strong>단 하나의 소원</strong>을 이루어 주겠다는 터무니 없는 글. </p>
+            <p class="content-text">당신은 홀린 듯 제안에 응했습니다. 어쩌면 심사숙고해 결정했을 수도요. 그리고 지금 막, <strong>동화나라</strong>로 발을 내디뎠습니다.</p>
+
+            <h2 class="section-title">동화나라</h2>
+            <p class="content-text">꿈과 희망으로 빚어진 매우매우 아름답고 환상적인 세계, <strong>동화나라.</strong> 그러나 평화롭던 이곳에 위기가 찾아왔습니다. </p>
+            <p class="content-text">현실 세계의 사람들이 더 이상 동화와 희망을 믿지 않게 되자, 나라를 지탱하던 근원이 메마르기 시작한 것이죠.</p>
+            <p class="content-text">동화나라의 왕 <strong>헨리 3세</strong>는 무너져가는 동화나라를 구하기 위해 결단을 내립니다. </p>
+            <p class="content-text"><strong>소원의 돌</strong>을 걸고, 달리기 대회를 개최하기로 한 것입니다.</p>
+
+            <p class="content-text">우승하는 자, 소원의 돌로 단 한 가지 소원을 이루리라. </p>
+            <p class="content-text">이 간절한 부름은 차원을 넘어 소망을 품은 이들의 마음속에 닿았고, 마침내 당신에게도 도착했습니다.  </p>
+            <p class="content-text"><span style="color: #c9c9c9;">하지만 빛이 강해질수록 그림자도 짙어지는 법. 구석으로 내몰린 악당들의 어둠은 점점 커져만 가고...</span> </p>
+
+            <h2 class="section-title">캐릭터 가이드</h2>
+            <p class="content-text">캐릭터는 전원 지구에 사는 인간 캐릭터이며, 커뮤니티 배경이 2010년이기 때문에 그에 맞는 디자인을 지향합니다. </p>
+            <p class="content-text">모두 소원을 이루기 위해 동화나라로 왔으며, 바라는 소원은 무엇이든 자유롭습니다. </p>
+            <p class="content-text"><span style="color: #c9c9c9;">가라앉은 섬을 끌어올리기 위해, 달리기 위해, 다시 앞을 보고 달려나가기 위해.</span> </p>
+
+            <button class="back-btn" onclick="showMain()">뒤로 가기</button>
+        </div>
+
+        <div id="system-page" class="content-page">
+            <h2 class="section-title">일정</h2>
+            <p class="content-text"><strong>일상 4D 시리 4D</strong>로 진행합니다. 일상 및 시리 모든 일정에 달리기 이벤트가 있습니다. </p>
+            <div class="system-box">
+                <p class="content-text" style="margin-bottom:5px;"><strong>1D</strong> : 하이로그</p>
+                <p class="content-text" style="margin-bottom:5px;"><strong>2D</strong> : 포인트 상점 </p>
+                <p class="content-text" style="margin-bottom:5px;"><strong>3D</strong> : 개인 미션</p>
+                <p class="content-text" style="margin-bottom:5px;"><strong>4D</strong> : 달리기?</p>
+                <p class="content-text" style="margin-bottom:5px;"><strong>5D ~ 7D</strong> : 시리</p>
+                <p class="content-text" style="margin-bottom:0px;"><strong>8D</strong> : 엔딩</p>
+            </div>
+
+            <h2 class="section-title">포인트제</h2>
+            <p class="content-text">엔딩 시 최다 포인트 보유 캐릭터의 소원을 이루어 드립니다.</p>
+            <p class="content-text"><strong>획득 경로:</strong> 달리기, 로그 업로드, 미션 수행을 통해 획득 가능</p>
+            <p class="content-text"><strong>사용처:</strong> 포인트 상점에서 아이템 구매 가능</p>
+            <div class="system-box">
+                <p class="content-text" style="margin-bottom:5px;">로그 : 200P</p>
+                <p class="content-text" style="margin-bottom:5px;">1위 : 600P</p>
+                <p class="content-text" style="margin-bottom:5px;">2위 : 500P</p>
+                <p class="content-text" style="margin-bottom:5px;">3위 : 400P</p>
+                <p class="content-text" style="margin-bottom:5px;">4위 ~ 6위 : 300P</p>
+                <p class="content-text" style="margin-bottom:5px;">7위 ~ 8위 : 200P</p>
+                <p class="content-text" style="margin-bottom:0px;">9위 ~ 30위 : 100P</p>
+            </div>
+
+            <h2 class="section-title">인게임 연동</h2>
+            <p class="content-text"><strong>달리기는 매일 6시와 9시에 30인 달리기로 진행됩니다.</strong> 관련 게시글에 참여의사를 남길 시 <strong>드림즈런너 계정</strong>으로 초대 하며, 일상 기간에는 <strong>동화 랜덤과 트레이닝 랜덤, 종합 랜덤</strong>으로 인하루에 총 세번 달리게 될 예정입니다. </p>
+            <p class="content-text">다음은 게임 중 규칙입니다. 뉴비나 복귀 유저분들을 위한 규칙이니 양해 부탁드립니다. </p>
+            
+            <div class="system-box">
+                <p class="content-text" style="margin-bottom:5px;">최고속도 16 초과 X</p>
+                <p class="content-text" style="margin-bottom:5px;">최대증 120 초과 X</p>
+                <p class="content-text" style="margin-bottom:5px;">6시 참여 시 9시 참여 X</p>
+                <p class="content-text" style="margin-bottom:5px;">아이템전은 룰렛으로 결정 </p>
+                <p class="content-text" style="margin-bottom:0px;">달리기 중에도 캐입 </p>
+            </div>
+
+            <p class="content-text">시리 돌입 이후에도 마찬가지로 6시와 9시에 달리기가 진행되며, <strong>3판 모두 하드코어 랜덤 맵</strong>으로 진행될 예정입니다. </p>
+
+            <h2 class="section-title">상태이상</h2>
+            <p class="content-text">시리 돌입 중 캐릭터가 상태이상에 걸릴 수 있습니다. 상태이상은 시리돌입 시 천천히 공개될 예정이며, 이와 관련된 스킬 사용 가능합니다.</p>
+
+            <h2 class="section-title">스킬</h2>
+            <p class="content-text">러닝 중 2회 스킬을 사용할 수 있습니다. 하루에 최대 5명이 스킬을 사용할 수 있으며, 스킬을 사용하기 전에 게시물이 올라올 시 @드림삐에로 [1~3번째판/스킬] 양식에 맞춰 개인밴드로 보내주세요. </p>
+            <p class="content-text"><span style="color: #c9c9c9;"> ex) [2번째판/분노폭발이야!!!!]</span> </p>
+            <p class="content-text">스킬 효과에 대한 예시는 다음과 같습니다. 밑은 단순 예시이며 본인이 창작해 사용해도 괜찮습니다.</p>
+            <div class="system-box">
+                <p class="content-text" style="margin-bottom:5px;">• 스킬 시전 시, 해당 달리기의 순위 포인트를 2배로 받습니다. </p>
+                <p class="content-text" style="margin-bottom:5px;">• 스킬 시전 시, 원하는 사람과 순위를 교환합니다.</p>
+                <p class="content-text" style="margin-bottom:5px;">• 스킬 시전 시, 원하는 사람의 상태이상을 자신에게 옮깁니다.</p>
+                <p class="content-text" style="margin-bottom:5px;">• 스킬 시전 시, 본인의 대시 최고속도 증가가 10%로늘어납니다.</p>
+                <p class="content-text" style="margin-bottom:5px;">• 스킬 시전 시, 해당 달리기의 상태이상을 무효화합니다.</p>
+                <p class="content-text" style="margin-bottom:0px;">• 스킬 시전 시, 원하는 맵으로 설정할 수 있습니다.</p>
+            </div>
+
+            <h2 class="section-title">스토리 진행</h2>
+            <p class="content-text">스토리 진행은 오후 10시 ~ 11시 30분에 매일, 혹은 하루 정도의 텀을 두고 진행하며 매일 프공방 내 댓글로 스토리 진행 시각을 공개합니다. 
+            <button class="back-btn" onclick="showMain()">뒤로 가기</button>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            const mainPage = document.getElementById('main-page');
+            const targetPage = document.getElementById(pageId);
+            mainPage.classList.add('fade-out');
+            setTimeout(() => {
+                mainPage.style.display = 'none';
+                targetPage.style.display = 'block';
+                setTimeout(() => {
+                    targetPage.classList.add('pop-in');
+                }, 50);
+            }, 500);
+        }
+
+        function showMain() {
+            const mainPage = document.getElementById('main-page');
+            const pages = document.querySelectorAll('.content-page');
+            pages.forEach(page => page.classList.remove('pop-in'));
+            setTimeout(() => {
+                pages.forEach(page => page.style.display = 'none');
+                mainPage.style.display = 'flex';
+                setTimeout(() => {
+                    mainPage.classList.remove('fade-out');
+                }, 50);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
