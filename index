@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>코코포리아용 APNG 만들기</title>
+<style>
+:root{color-scheme:dark;--bg:#171820;--panel:#222430;--line:#3a3d4d;--text:#f2f2f7;--muted:#aeb2c4;--accent:#b9a3ff;--accent2:#8b74df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:28px 18px 48px}h1{font-size:clamp(25px,4vw,36px);line-height:1.2;margin:0 0 10px}p{margin:8px 0;color:var(--muted)}.sub{margin-bottom:24px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0}
+.drop{border:2px dashed #69617f;border-radius:14px;text-align:center;padding:28px 16px;cursor:pointer;background:#1c1d28}.drop:hover{border-color:var(--accent)}.drop strong{display:block;font-size:17px;margin-bottom:5px}.drop input{display:none}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:18px}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;background:#171820;color:var(--text);border:1px solid var(--line);padding:10px 11px;border-radius:9px;font:inherit}.check{display:flex;gap:9px;align-items:center;margin-top:10px;color:var(--muted)}button{border:0;border-radius:10px;padding:11px 16px;font:600 14px inherit;cursor:pointer;background:var(--accent);color:#171820}button:hover{background:#cbbdff}button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#343646;color:var(--text)}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.frames{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px;margin-top:15px}.frame{background:#191a23;border:1px solid var(--line);border-radius:12px;padding:8px;min-width:0}.thumb{height:105px;border-radius:8px;background-color:#fff;background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0;display:flex;align-items:center;justify-content:center;overflow:hidden}.thumb img{max-width:100%;max-height:100%;object-fit:contain}.fname{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:7px 0;color:var(--muted)}.fbuttons{display:flex;gap:5px}.fbuttons button{flex:1;padding:6px 0;font-size:12px}.preview-wrap{display:flex;align-items:center;justify-content:center;min-height:220px;border-radius:12px;background-color:#fff;background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;overflow:hidden}.preview-wrap img{max-width:100%;max-height:360px;object-fit:contain}.status{margin-top:12px;color:var(--muted);font-size:13px}.note{font-size:13px;color:var(--muted)}.pill{display:inline-block;padding:3px 8px;background:#38334d;color:#d9ceff;border-radius:99px;font-size:12px;margin-left:6px}
+@media(max-width:540px){main{padding:20px 12px}.panel{padding:14px}.drop{padding:22px 10px}}
+</style>
+</head>
+<body>
+<main>
+<h1>움직이는 APNG 만들기 <span class="pill">코코포리아용</span></h1>
+<p class="sub">이미지 한 장만 넣으면 위아래로 부드럽게 둥실둥실 움직이는 APNG를 만들어 줍니다. 파일은 브라우저 안에서 처리됩니다.</p>
+
+<section class="panel">
+<label class="drop" for="files"><strong>＋ 이미지 한 장 넣기</strong><span>PNG를 권장해요. 이미지를 여기에 놓아도 됩니다.</span><p>투명 배경이면 코코포리아 토큰처럼 사용할 수 있어요</p><input id="files" type="file" accept="image/png,image/webp,image/gif,image/jpeg"></label>
+<div id="frames" class="frames"></div>
+<div class="actions"><button class="secondary" id="clear">이미지 지우기</button></div>
+<div class="controls">
+ <div class="field"><label for="delay">움직임 속도</label><select id="delay"><option value="90">빠르게</option><option value="130" selected>보통</option><option value="190">느리게</option></select></div>
+ <div class="field"><label for="amplitude">둥실 움직이는 폭</label><select id="amplitude"><option value="4">살짝</option><option value="9" selected>보통</option><option value="16">많이</option></select></div>
+ <div class="field"><label for="size">출력 크기 기준</label><select id="size"><option value="largest">가장 큰 이미지 기준 (권장)</option><option value="first">첫 번째 이미지 기준</option><option value="custom">직접 지정</option></select></div>
+ <div class="field"><label for="width">너비 (직접 지정 시)</label><input id="width" type="number" min="1" max="2000" value="400"></div>
+ <div class="field"><label for="height">높이 (직접 지정 시)</label><input id="height" type="number" min="1" max="2000" value="400"></div>
+</div>
+<label class="check"><input type="checkbox" id="sway" checked> 좌우로 살짝 흔들리기</label>
+<label class="check"><input type="checkbox" id="loop" checked> 무한 반복 재생</label>
+<div class="actions"><button id="make" disabled>APNG 만들기</button><button class="secondary" id="download" disabled>APNG 다운로드</button></div>
+<div class="status" id="status">이미지 한 장을 추가해 주세요.</div>
+</section>
+
+<section class="panel">
+<h2 style="font-size:18px;margin:0 0 12px">미리보기</h2>
+<div class="preview-wrap" id="preview"><span style="color:#666">완성된 애니메이션이 여기에 표시됩니다</span></div>
+<p class="note">코코포리아에 업로드하기 전, 플랫폼의 파일 용량 제한에 맞는지 확인해 주세요. 프레임 수가 많거나 이미지가 크면 파일도 커질 수 있습니다.</p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/upng-js@2.1.0/UPNG.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let source=null, resultUrl=null, sourceUrl=null;
+const status=t=>$('status').textContent=t;
+function addFiles(fileList){
+ const file=[...fileList].find(f=>/^image\/(png|webp|gif|jpeg)$/.test(f.type));
+ if(!file)return;
+ if(sourceUrl)URL.revokeObjectURL(sourceUrl);
+ sourceUrl=URL.createObjectURL(file);const img=new Image();
+ img.onload=()=>{source={file,img};renderFrames();$('make').disabled=false;status(`이미지 준비 완료 · ${img.naturalWidth} × ${img.naturalHeight}px`)};
+ img.onerror=()=>status('이미지를 열지 못했습니다. 다른 파일을 선택해 주세요.');img.src=sourceUrl;
+}
+function renderFrames(){const root=$('frames');root.innerHTML='';if(!source)return;const card=document.createElement('div');card.className='frame';const thumb=document.createElement('div');thumb.className='thumb';const im=document.createElement('img');im.src=sourceUrl;thumb.append(im);const name=document.createElement('div');name.className='fname';name.textContent=source.file.name;card.append(thumb,name);root.append(card)}
+$('files').addEventListener('change',e=>{addFiles(e.target.files);e.target.value=''});
+$('clear').onclick=()=>{source=null;if(sourceUrl)URL.revokeObjectURL(sourceUrl);sourceUrl=null;renderFrames();$('make').disabled=true;$('download').disabled=true;if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=null;$('preview').innerHTML='<span style="color:#666">완성된 애니메이션이 여기에 표시됩니다</span>';status('이미지 한 장을 추가해 주세요.')};
+document.querySelector('.drop').addEventListener('dragover',e=>{e.preventDefault();e.currentTarget.style.borderColor='#b9a3ff'});
+document.querySelector('.drop').addEventListener('dragleave',e=>{e.currentTarget.style.borderColor=''});
+document.querySelector('.drop').addEventListener('drop',e=>{e.preventDefault();e.currentTarget.style.borderColor='';addFiles(e.dataTransfer.files)});
+$('make').onclick=async()=>{
+ if(!source)return;
+ if(!window.UPNG){status('인코더를 불러오지 못했습니다. 인터넷 연결 후 페이지를 새로고침해 주세요.');return}
+ $('make').disabled=true;$('download').disabled=true;status('둥실둥실 APNG를 만드는 중…');
+ try{
+  const im=source.img, mode=$('size').value;let w,h;
+  if(mode==='custom'){w=Math.max(1,Math.min(2000,parseInt($('width').value)||400));h=Math.max(1,Math.min(2000,parseInt($('height').value)||400))}
+  else if(mode==='first'){w=im.naturalWidth;h=im.naturalHeight}
+  else{w=im.naturalWidth;h=im.naturalHeight}
+  const framesCount=24, delay=Math.max(20,parseInt($('delay').value)||130), amp=Math.max(1,parseInt($('amplitude').value)||9), buffers=[];
+  if(w*h*framesCount>120000000){status('이미지가 너무 큽니다. 출력 크기를 줄여 주세요.');$('make').disabled=false;return}
+  for(let i=0;i<framesCount;i++){
+   const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.clearRect(0,0,w,h);
+   const phase=(i/framesCount)*Math.PI*2;const scale=Math.min(w/im.naturalWidth,h/im.naturalHeight);const dw=im.naturalWidth*scale,dh=im.naturalHeight*scale;
+   const bob=Math.sin(phase)*amp*(w/im.naturalWidth);const sway=$('sway').checked?Math.sin(phase)*amp*.28*(w/im.naturalWidth):0;
+   ctx.save();ctx.translate(w/2+sway,h/2+bob);ctx.rotate($('sway').checked?Math.sin(phase)*0.018:0);ctx.drawImage(im,-dw/2,-dh/2,dw,dh);ctx.restore();
+   buffers.push(ctx.getImageData(0,0,w,h).data.buffer);
+   if(i%4===0){status(`프레임 생성 중… ${i+1}/${framesCount}`);await new Promise(r=>setTimeout(r,0))}
+  }
+  const delays=framesCount;const encoded=UPNG.encode(buffers,w,h,0,Array(framesCount).fill(delay));const blob=new Blob([encoded],{type:'image/png'});
+  if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const preview=$('preview');preview.innerHTML='';const anim=new Image();anim.src=resultUrl;preview.append(anim);
+  $('download').disabled=false;status(`완료! ${w} × ${h}px · 둥실둥실 애니메이션 · ${(blob.size/1024).toFixed(1)} KB`);
+ }catch(err){console.error(err);status('생성 중 오류가 발생했습니다. 이미지 크기를 줄여 다시 시도해 주세요.')}
+ finally{$('make').disabled=!source}
+};
+$('download').onclick=()=>{if(!resultUrl)return;const a=document.createElement('a');a.href=resultUrl;a.download='cocofolia-floating.png';document.body.append(a);a.click();a.remove()};
+</script>
+</body>
+</html>
